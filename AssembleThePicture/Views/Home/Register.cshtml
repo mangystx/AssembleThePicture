@@ -1,0 +1,40 @@
+@model AssembleThePicture.Models.ViewModels.Authorization.RegisterViewModel
+<div class="form-box register">
+        <h2>registration</h2>
+    <form asp-antiforgery="true"  asp-action="Register" asp-controller="Home" method="post">
+        <div class="register-error-message">
+            <div class="register-error-message">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="input-box">
+            <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+            <input required asp-for="Name">
+            <label asp-for="Name"></label>
+        </div>
+        <div class="input-box">
+            <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+            <input required asp-for="Password">
+            <label asp-for="Password"></label>
+        </div>
+        <div class="input-box">
+            <input required asp-for="ConfirmPassword">
+            <label asp-for="ConfirmPassword"></label>
+        </div>
+        <button type="submit" class="btn">Register</button>
+        <div class="login-register">
+            <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+        </div>
+    </form>
+</div>
+<script>
+const loginLink = document.querySelector('.login-link');
+loginLink.addEventListener('click', () => {
+    wrapper.classList.remove('active');
+});
+</script>

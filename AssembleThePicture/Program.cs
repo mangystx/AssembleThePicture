@@ -1,27 +1,33 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = "/Authorization/Login"; 
+});
+
+const string connectionUri =
+    "mongodb+srv://AndreyI:fitwamDSmFmySBM3@mydb.q3fii6h.mongodb.net/?retryWrites=true&w=majority";
+
+var settings = MongoClientSettings.FromConnectionString(connectionUri);
+settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+builder.Services.AddSingleton(new MongoClient(settings));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapDefaultControllerRoute();
 
 app.Run();
