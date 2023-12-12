@@ -33,7 +33,7 @@ public class HomeController : Controller
     {
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
         if (ViewBag.Pictures == null || ViewBag.Pictures is List<Picture> { Count: 0 })
-        {
+        { 
             _logger.LogWarning("ViewBag.Pictures is null");
         }
         return View();

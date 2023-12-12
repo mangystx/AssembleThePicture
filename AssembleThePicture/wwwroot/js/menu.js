@@ -4,6 +4,7 @@ const wrapper = document.querySelector('.wrapper');
 const registerLink = document.querySelector('.register-link');
 const iconClose = document.querySelector('.icon-close');
 const addImage = document.querySelector('.add-image-container');
+const picturePreview = document.querySelector('.picture-preview');
 
 document.addEventListener('DOMContentLoaded', OnLoad);
 
@@ -120,6 +121,21 @@ function uploadFile(file) {
         method: 'POST',
         body: formData
     }).catch(error => {
-            console.error('Error uploading file:', error);
-        });
+        console.error('Error uploading file:', error);
+    });
+}
+
+function HandlePicturePreviewClick(pictureId) {
+    fetch('/Picture/Puzzle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',  
+        },
+        body: JSON.stringify(pictureId)
+    }).then(response => response.text())
+        .then(result => {
+            document.open();
+            document.write(result);
+            document.close();
+        })
 }
