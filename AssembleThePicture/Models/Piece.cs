@@ -11,10 +11,6 @@ public class Piece
         get => _rotate;
         set => _rotate = (_rotate + value) % 360;
     }
-
-    public int Width { get; set; }
-    
-    public int Height { get; set; }
     
     public int CurrentRow { get; set; }
     

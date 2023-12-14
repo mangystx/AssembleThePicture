@@ -28,3 +28,26 @@ document.querySelectorAll('.letter').forEach(letterEl => {
         elasticity: 400
     });
 });
+
+const pieceContainers = document.getElementsByClassName('puzzle-piece');
+const pieces = document.getElementsByClassName('piece');
+
+pieces.forEach(piece => {
+    piece.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData()
+    });
+    
+    piece.addEventListener('drag', () => {
+
+    });
+    
+    piece.addEventListener('dragend', () => {
+
+    });
+})
+
+pieceContainers.forEach(container => {
+   container.addEventListener('drop', () =>{
+       
+   });
+});

@@ -96,8 +96,6 @@ namespace AssembleThePicture.Controllers
                     var piece = new Piece
                     {
                         ImageData = pieceImageData,
-                        Width = pieceWidth,
-                        Height = pieceHeight,
                         CurrentRow = row,
                         CurrentCol = col,
                         RightRow = row,

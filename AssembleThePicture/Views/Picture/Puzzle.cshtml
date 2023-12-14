@@ -51,15 +51,22 @@
       </a>
   </header>
    <main>
-       <div class="puzzle" id="puzzle-container">
-           @foreach (var piece in Model)
-           {
-               <div class="puzzle-piece" data-row="@piece.CurrentRow" data-col="@piece.CurrentCol" 
-                    data-width="@piece.Width" data-height="@piece.Height" data-rotate="@piece.Rotate">
-                   <img src="data:image/jpeg;base64,@Convert.ToBase64String(piece.ImageData)" alt="Piece" />
-               </div>
-           }
-       </div>
+       <div class="puzzle">
+                 @for (int i = 0; i < 4; i++)
+                 {
+                     for (int j = 0; j < 4; j++)
+                     {
+                         <div class="puzzle-piece" row="@i" col="@j">
+                             @{
+                                 var piece = Model.First(p => p.CurrentCol == j && p.CurrentRow == i);
+                                 <img class="piece" crt-col="@piece.CurrentCol" crt-row="@piece.CurrentRow" 
+                                      src="data:image/jpeg;base64,@Convert.ToBase64String(piece.ImageData)" alt="Piece"
+                                      draggable="true"/>
+                             }
+                         </div>
+                     }
+                 }
+              </div>
        <div class="right-side-menu"></div>
    </main>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.js'></script>
