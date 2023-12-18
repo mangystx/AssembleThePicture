@@ -115,12 +115,7 @@ namespace AssembleThePicture.Controllers
                 (Pieces[k].CurrentCol, Pieces[k].CurrentRow, Pieces[n].CurrentCol, Pieces[n].CurrentRow) =
                     (Pieces[n].CurrentCol, Pieces[n].CurrentRow, Pieces[k].CurrentCol, Pieces[k].CurrentRow);
             }
-
-            foreach (var piece in Pieces)
-            {
-                piece.Rotate = random.Next(4) * 90;
-            }
-
+            
             return View(Pieces);
         }
     }

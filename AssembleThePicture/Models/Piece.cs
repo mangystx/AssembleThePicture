@@ -3,14 +3,6 @@ namespace AssembleThePicture.Models;
 public class Piece
 {
     public byte[] ImageData { get; set; }
-
-    private int _rotate;
-
-    public int Rotate
-    {
-        get => _rotate;
-        set => _rotate = (_rotate + value) % 360;
-    }
     
     public int CurrentRow { get; set; }
     
@@ -20,5 +12,5 @@ public class Piece
     
     public int RightCol { get; set; }
 
-    public bool IsOnRightPlace => CurrentRow == RightRow && CurrentCol == RightCol && Rotate == 0;
+    public bool IsOnRightPlace => CurrentRow == RightRow && CurrentCol == RightCol;
 }

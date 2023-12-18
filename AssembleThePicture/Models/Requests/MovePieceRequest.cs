@@ -9,6 +9,4 @@ public class MovePieceRequest
     public int NewRow { get; set; }
     
     public int NewCol { get; set; }
-    
-    public int Rotate { get; set; }
 }
