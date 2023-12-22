@@ -8,6 +8,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 {
     options.LoginPath = "/Authorization/Login"; 
 });
+builder.Services.AddSession();
 
 const string connectionUri =
     "mongodb+srv://AndreyI:fitwamDSmFmySBM3@mydb.q3fii6h.mongodb.net/?retryWrites=true&w=majority";
@@ -26,6 +27,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 app.UseRouting();
 app.UseAuthorization();
 app.MapDefaultControllerRoute();

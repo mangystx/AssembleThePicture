@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
+using AssembleThePicture.Extensions;
 using AssembleThePicture.Models;
 using AssembleThePicture.Models.DataBase;
 using AssembleThePicture.Models.Requests;
@@ -26,8 +28,6 @@ namespace AssembleThePicture.Controllers
         private readonly MongoClient _mongoClient;
 
         private readonly IMongoDatabase _db;
-
-        public List<Piece> Pieces { get; set; }
 
         public PictureController(MongoClient client, ILogger<PictureController> logger)
         {
@@ -66,7 +66,7 @@ namespace AssembleThePicture.Controllers
         [Authorize]
         public async Task<IActionResult> Puzzle([FromBody] string pictureId)
         {
-            Pieces = new List<Piece>();
+            var Pieces = new List<Piece>();
             const int rows = 4;
             const int cols = 4;
 
@@ -115,8 +115,62 @@ namespace AssembleThePicture.Controllers
                 (Pieces[k].CurrentCol, Pieces[k].CurrentRow, Pieces[n].CurrentCol, Pieces[n].CurrentRow) =
                     (Pieces[n].CurrentCol, Pieces[n].CurrentRow, Pieces[k].CurrentCol, Pieces[k].CurrentRow);
             }
+
+            ViewBag.WholeImageData = imageData;
+            
+            _logger.LogInformation("on create:");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Pieces.Count; i++)
+            {
+                var piece = Pieces[i];
+                sb.Append(
+                    $"{i + 1} -> crtRow = {piece.CurrentRow}, crtCol = {piece.CurrentCol}; RightRow = {piece.RightRow}, RightCol = {piece.RightCol}\n");
+            }
+            
+            _logger.LogInformation(sb.ToString());
+            
+            HttpContext.Session.Set("Pieces", Pieces);
             
             return View(Pieces);
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult MovePiece([FromBody] MovePieceRequest movePieceRequest)
+        {
+            var pieces = HttpContext.Session.Get<List<Piece>>("Pieces");
+
+            var piece1 = pieces.First(p => p.CurrentCol == movePieceRequest.Piece1Col
+                                                    && p.CurrentRow == movePieceRequest.Piece1Row);
+            var piece2 = pieces.First(p => p.CurrentCol == movePieceRequest.Piece2Col 
+                                           && p.CurrentRow == movePieceRequest.Piece2Row);
+
+            piece1.CurrentCol = movePieceRequest.Piece2Col;
+            piece1.CurrentRow = movePieceRequest.Piece2Row;
+            piece2.CurrentCol = movePieceRequest.Piece1Col;
+            piece2.CurrentRow = movePieceRequest.Piece1Row;
+            
+            _logger.LogInformation(movePieceRequest.Piece1Row.ToString());
+            _logger.LogInformation(movePieceRequest.Piece1Col.ToString());
+            _logger.LogInformation(movePieceRequest.Piece2Row.ToString());
+            _logger.LogInformation(movePieceRequest.Piece2Col.ToString());
+           
+            
+
+            var response = pieces.All(p => p.IsOnRightPlace);
+            _logger.LogInformation(response.ToString());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                var piece = pieces[i];
+                sb.Append(
+                    $"{i + 1} -> crtRow = {piece.CurrentRow}, crtCol = {piece.CurrentCol}; RightRow = {piece.RightRow}, RightCol = {piece.RightCol}\n");
+            }
+            
+            _logger.LogInformation(sb.ToString());
+            
+            return Ok(response);
+        }
+
     }
 }
