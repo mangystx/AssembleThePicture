@@ -80,6 +80,7 @@ Array.from(pieceContainers).forEach(container => {
             Piece2Row: parseInt(piece2Row),
             Piece2Col: parseInt(piece2Col),
         };
+        
         const response = await fetch('Picture/MovePiece/', {
             method: 'POST',
             headers: {
@@ -87,10 +88,16 @@ Array.from(pieceContainers).forEach(container => {
             },
             body: JSON.stringify(movePieceRequest),
         });
+        
         let value = await response.json();
         if (value) {
-            alert('You win!');
-            window.location.href = 'Home/Index/';
+            setTimeout(() => {
+                alert('You win!');
+                const result = fetch('Picture/AddNewScore/', {
+                    
+                });
+                window.location.href = 'Home/Index/';
+            }, 300); 
         }
         
         timerValue -= 100;
