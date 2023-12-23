@@ -53,10 +53,10 @@ public class HomeController : Controller
             {
                 ModelState.AddModelError("", "Such user does not exist");
                 ViewBag.OpenLoginForm = true;
+                ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
                 return View("Index");
             }
-
-            ;
+            
             if (user.Password != model.Password){
                 ModelState.AddModelError("", "Wrong password");
                 ViewBag.OpenLoginForm = true;
@@ -76,6 +76,7 @@ public class HomeController : Controller
         }
 
         ViewBag.OpenLoginForm = true;
+        ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
         return View("Index");
     }
 
@@ -93,6 +94,7 @@ public class HomeController : Controller
             {
                 ModelState.AddModelError("", "User already exists");
                 ViewBag.OpenRegisterForm = true;
+                ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
                 return View("Index");
             }
 
@@ -128,6 +130,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Logout()
     {
         await ControllerContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
         return View("Index");
     }
     

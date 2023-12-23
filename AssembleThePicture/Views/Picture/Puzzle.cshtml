@@ -71,31 +71,18 @@
         <div class="timer">18000</div>
         <div class="scores-container">
             <h2>Top scores</h2>
-            <div class="scores-container__score">
-                <div class="scores-container__number">1.</div>
-                <div class="scores-container__value">11300</div>
-                <div class="scores-container__name">Andrey</div>
-            </div>
-            <div class="scores-container__score">
-                <div class="scores-container__number">2.</div>
-                <div class="scores-container__value">10200</div>
-                <div class="scores-container__name">G</div>
-            </div>
-            <div class="scores-container__score">
-                <div class="scores-container__number">3.</div>
-                <div class="scores-container__value">9800</div>
-                <div class="scores-container__name">asdew</div>
-            </div>
-            <div class="scores-container__score">
-                <div class="scores-container__number">4.</div>
-                <div class="scores-container__value">9000</div>
-                <div class="scores-container__name">Ghost</div>
-            </div>
-            <div class="scores-container__score">
-                <div class="scores-container__number">5.</div>
-                <div class="scores-container__value">3000</div>
-                <div class="scores-container__name">Zibe</div>
-            </div>
+            @{
+                var attempts = ViewBag.Attempts as List<Attempt>;
+                for (int i = 1; i <= 5; i++)
+                {
+                    var attempt = attempts!.Count <= i - 1 ? new Attempt { UserName = "-", Score = 0 } : attempts[i - 1];
+                    <div class="scores-container__score">
+                        <div class="scores-container__number">@i.</div>
+                        <div class="scores-container__value">@attempt.Score</div>
+                        <div class="scores-container__name">@attempt.UserName</div>
+                    </div>
+                }
+            }
         </div>
         <div class="hint"><ion-icon class="hint__icon" name="bulb-outline"></ion-icon></div>
     </div>

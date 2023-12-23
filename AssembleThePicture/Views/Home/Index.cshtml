@@ -139,7 +139,7 @@
  }
 </header>
 <main>
-  @foreach (var picture in (ViewBag.Pictures as List<Picture>))
+  @foreach (var picture in (ViewBag.Pictures as List<Picture>)!)
   {
       <div class="picture-preview">
           @if (picture.ImageData != null && picture.ImageData.Length > 0)

@@ -51,7 +51,6 @@ namespace AssembleThePicture.Controllers
                 {
                     UserName = User.Identity.Name,
                     ImageData = byteArray,
-                    BestAttempts = new List<Attempt>()
                 };
 
                 await _db.GetCollection<Picture>("pictures").InsertOneAsync(picture);
@@ -117,8 +116,13 @@ namespace AssembleThePicture.Controllers
             }
 
             ViewBag.WholeImageData = imageData;
+            
+            var filter = Builders<Attempt>.Filter.Eq("PictureId", objectId);
+            ViewBag.Attempts = _db.GetCollection<Attempt>("attempts").Find(filter)
+                .SortByDescending(a => a.Score).Limit(5).ToList();
+            
             HttpContext.Session.Set("Pieces", pieces);
-            HttpContext.Session.Set("PictureId", objectId);
+            HttpContext.Session.Set("PictureId", pictureId);
             
             return View(pieces);
         }
@@ -149,29 +153,34 @@ namespace AssembleThePicture.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddNewScore(int score)
+        public async Task<IActionResult> AddNewScore([FromBody]int score)
         {
-            var pictureId = HttpContext.Session.Get<ObjectId>("PictureId");
-            var attempts = _db.GetCollection<Attempt>("attempts");
-            
-            var attemptsOnMap = attempts.Find(a => a.PictureId == pictureId).ToList();
-            var lastUserScore = attemptsOnMap.FirstOrDefault(a => a.UserName == HttpContext.User.Identity!.Name);
-            
-            if (lastUserScore == null)
+            try
             {
-                await _db.GetCollection<Attempt>("attempts").InsertOneAsync(new Attempt
-                    { UserName = HttpContext.User.Identity!.Name!, PictureId = pictureId, Score = score });
-            }
-            else
-            {
-                if (lastUserScore.Score < score)
+                var pictureId = ObjectId.Parse(HttpContext.Session.Get<string>("PictureId"));
+                string userName = HttpContext.User.Identity.Name;
+                var attempts = _db.GetCollection<Attempt>("attempts");
+
+                var filter = Builders<Attempt>.Filter.Eq(a => a.UserName, userName)
+                             & Builders<Attempt>.Filter.Eq(a => a.PictureId, pictureId);
+                var existingAttempt = attempts.Find(filter).FirstOrDefault();
+
+                if (existingAttempt == null || score > existingAttempt.Score)
                 {
-                    await attempts.ReplaceOneAsync(a => a.UserName == lastUserScore.UserName, new Attempt
-                        { UserName = HttpContext.User.Identity!.Name!, PictureId = pictureId, Score = score });
+                    var update = Builders<Attempt>.Update.Set(a => a.Score, score)
+                        .SetOnInsert(a => a.UserName, userName).SetOnInsert(a => a.PictureId, pictureId);
+                    var options = new FindOneAndUpdateOptions<Attempt>
+                        { IsUpsert = true, ReturnDocument = ReturnDocument.After };
+
+                    attempts.FindOneAndUpdate(filter, update, options);
                 }
+
+                return Ok();
             }
-            
-            return Ok();
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

@@ -12,6 +12,4 @@ public class Picture
     
     [BsonElement("ImageData")]
     public byte[] ImageData { get; set; }
-    
-    [BsonElement("BestAttempts")] public List<Attempt> BestAttempts { get; set; }
 }

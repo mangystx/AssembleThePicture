@@ -5,6 +5,9 @@ namespace AssembleThePicture.Models.DataBase;
 
 public class Attempt
 {
+    [BsonId]
+    public ObjectId Id { get; set; }
+    
     [BsonElement("UserName")]
     public string UserName { get; set; }
     
