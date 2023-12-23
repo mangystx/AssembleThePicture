@@ -118,6 +118,7 @@ namespace AssembleThePicture.Controllers
 
             ViewBag.WholeImageData = imageData;
             HttpContext.Session.Set("Pieces", pieces);
+            HttpContext.Session.Set("PictureId", objectId);
             
             return View(pieces);
         }
@@ -144,6 +145,33 @@ namespace AssembleThePicture.Controllers
             var response = pieces.All(p => p.IsOnRightPlace);
             
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddNewScore(int score)
+        {
+            var pictureId = HttpContext.Session.Get<ObjectId>("PictureId");
+            var attempts = _db.GetCollection<Attempt>("attempts");
+            
+            var attemptsOnMap = attempts.Find(a => a.PictureId == pictureId).ToList();
+            var lastUserScore = attemptsOnMap.FirstOrDefault(a => a.UserName == HttpContext.User.Identity!.Name);
+            
+            if (lastUserScore == null)
+            {
+                await _db.GetCollection<Attempt>("attempts").InsertOneAsync(new Attempt
+                    { UserName = HttpContext.User.Identity!.Name!, PictureId = pictureId, Score = score });
+            }
+            else
+            {
+                if (lastUserScore.Score < score)
+                {
+                    await attempts.ReplaceOneAsync(a => a.UserName == lastUserScore.UserName, new Attempt
+                        { UserName = HttpContext.User.Identity!.Name!, PictureId = pictureId, Score = score });
+                }
+            }
+            
+            return Ok();
         }
     }
 }

@@ -1,4 +1,4 @@
-let timerValue = 18000;
+let score = 18000;
 let timerInterval;
 const pieceContainers = document.getElementsByClassName('puzzle-piece');
 const pieces = document.getElementsByClassName('piece');
@@ -94,13 +94,17 @@ Array.from(pieceContainers).forEach(container => {
             setTimeout(() => {
                 alert('You win!');
                 const result = fetch('Picture/AddNewScore/', {
-                    
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(parseInt(score))
                 });
                 window.location.href = 'Home/Index/';
             }, 300); 
         }
         
-        timerValue -= 100;
+        score -= 100;
     });
 });
 
@@ -113,21 +117,21 @@ document.querySelector('.hint__icon').addEventListener('click', () => {
     
     setTimeout(() => {
         const modal = document.getElementById('pictureModal');
-        timerValue -= 2000
+        score -= 2000
         modal.style.display = 'none';
     }, 2000); 
 });
 
 function StartGame() {
     clearInterval(timerInterval);
-    document.querySelector('.timer').innerText = `${timerValue}`;
+    document.querySelector('.timer').innerText = `${score}`;
 
     timerInterval = setInterval(() => {
-        timerValue--;
-        document.querySelector('.timer').innerText = `${timerValue}`;
-        if (timerValue <= 0) {
+        score--;
+        document.querySelector('.timer').innerText = `${score}`;
+        if (score <= 0) {
             clearInterval(timerInterval);
-            timerValue = 0;
+            score = 0;
             alert('Game Over!'); 
         }
     }, 10);
