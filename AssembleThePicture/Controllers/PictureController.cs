@@ -11,7 +11,6 @@ using AssembleThePicture.Models;
 using AssembleThePicture.Models.DataBase;
 using AssembleThePicture.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -63,11 +62,88 @@ namespace AssembleThePicture.Controllers
             return Json(new { success = false, message = "No file or empty file received" });
         }
 
-        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddNewScore()
+        [Authorize]
+        public async Task<IActionResult> Puzzle([FromBody] string pictureId)
         {
-            return Ok();
+            var pieces = new List<Piece>();
+            const int rows = 4;
+            const int cols = 4;
+
+            if (pictureId == null) throw new ArgumentNullException();
+            
+            ObjectId objectId = ObjectId.Parse(pictureId);
+          
+            byte[] imageData = _db.GetCollection<Picture>("pictures").Find(p => p.Id == objectId)
+                .ToList()[0].ImageData;
+            
+            using var stream = new MemoryStream(imageData);
+            using var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+            int pieceWidth = image.Width / 4;
+            int pieceHeight = image.Height / 4;
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    var pieceImage = image.Clone(x => x
+                        .Crop(new Rectangle(col * pieceWidth, row * pieceHeight, pieceWidth, pieceHeight)));
+
+                    using var memoryStream = new MemoryStream();
+                    await pieceImage.SaveAsync(memoryStream, new JpegEncoder());
+                    var pieceImageData = memoryStream.ToArray();
+
+                    var piece = new Piece
+                    {
+                        ImageData = pieceImageData,
+                        CurrentRow = row,
+                        CurrentCol = col,
+                        RightRow = row,
+                        RightCol = col
+                    };
+
+                    pieces.Add(piece);
+                }
+            }
+
+            var random = new Random();
+            int n = pieces.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                (pieces[k].CurrentCol, pieces[k].CurrentRow, pieces[n].CurrentCol, pieces[n].CurrentRow) =
+                    (pieces[n].CurrentCol, pieces[n].CurrentRow, pieces[k].CurrentCol, pieces[k].CurrentRow);
+            }
+
+            ViewBag.WholeImageData = imageData;
+            HttpContext.Session.Set("Pieces", pieces);
+            
+            return View(pieces);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult MovePiece([FromBody] MovePieceRequest movePieceRequest)
+        {
+            var pieces = HttpContext.Session.Get<List<Piece>>("Pieces");
+
+            var piece1 = pieces.First(p => p.CurrentCol == movePieceRequest.Piece1Col
+                                                    && p.CurrentRow == movePieceRequest.Piece1Row);
+            var piece2 = pieces.First(p => p.CurrentCol == movePieceRequest.Piece2Col 
+                                           && p.CurrentRow == movePieceRequest.Piece2Row);
+            
+            piece1.CurrentCol = movePieceRequest.Piece2Col;
+            piece1.CurrentRow = movePieceRequest.Piece2Row;
+            piece2.CurrentCol = movePieceRequest.Piece1Col;
+            piece2.CurrentRow = movePieceRequest.Piece1Row;
+            
+            HttpContext.Session.Remove("Pieces");
+            HttpContext.Session.Set("Pieces", pieces);
+                
+            var response = pieces.All(p => p.IsOnRightPlace);
+            
+            return Ok(response);
         }
     }
 }
