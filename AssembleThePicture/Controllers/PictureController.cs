@@ -153,7 +153,7 @@ namespace AssembleThePicture.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddNewScore([FromBody]int score)
+        public IActionResult AddNewScore([FromBody]int score)
         {
             try
             {

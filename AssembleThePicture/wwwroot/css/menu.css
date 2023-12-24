@@ -11,16 +11,20 @@ body {
     flex-direction: column;
 }
 
-#logo{
-    position: absolute;
-    top: 10%;
-    left: 47%;
-    transform: translate(-50%, -50%);
+.logotype {
+    margin: 20px auto 0 auto;
+}
+
+.header__top {
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
 }
 
 .st0{
     fill: #ffffff;
 }
+
 .st1{
     fill:none;
     stroke: #000000;
@@ -29,6 +33,7 @@ body {
     stroke-linejoin:round;
     stroke-dasharray:0,25,175;
 }
+
 .st2{
     fill:none;
     stroke: #00eaff;
@@ -46,6 +51,7 @@ body {
     stroke-miterlimit:100;
     stroke-dasharray:0,37,129;
 }
+
 .st4{
     fill:none;
     stroke: #00eaff;
@@ -54,6 +60,7 @@ body {
     stroke-linejoin:round;
     stroke-dasharray:0,36,136;
 }
+
 .st5{
     fill:none;
     stroke: #000000;
@@ -64,12 +71,10 @@ body {
 
 
 header{
-    min-height: 100px;
+    
 }
 
 .btn-login {
-    right: 18px;
-    position: absolute;
     width: 80px;
     height: 50px;
     background: transparent;
@@ -80,7 +85,7 @@ header{
     font-size: 1.1em;
     color: #fff;
     font-weight: 500;
-    margin: 20px 0 0 0;
+    margin: 20px 10px 0 0;
     transition: 0.5s;
 }
 
@@ -94,8 +99,6 @@ header{
 }
 
 .btn-logout {
-    right: 16px;
-    position: absolute;
     width: 80px;
     height: 50px;
     background-color: #fff;
@@ -105,7 +108,7 @@ header{
     cursor: pointer;
     font-size: 1.1em;
     font-weight: 500;
-    margin: 20px 0 0 0;
+    margin: 20px 10px 0 0;
     transition: 0.5s;
 }
 
@@ -122,8 +125,11 @@ header{
 .wrapper {
     z-index: 99;
     display: flex;
-    margin: 140px auto 20px auto;
-    position: relative;
+    visibility: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    position: absolute;
     width: 400px;
     height: 440px;
     background: transparent;
@@ -136,10 +142,9 @@ header{
     justify-content: center;
     align-items: center;
     transition:
-            transform 0.5s ease,
-            height 0.2s ease;
+            transform 0s ease,
+            height 0s ease;
     overflow: hidden;
-    transform: scale(0);
 }
 
 .wrapper.active {
@@ -147,8 +152,11 @@ header{
 }
 
 .wrapper.active-login-menu {
-
-    transform: scale(1);
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    transition:
+            transform 0.5s ease,
+            height 0.2s ease;
 }
 
 .wrapper .form-box {
@@ -284,17 +292,19 @@ header{
     font-size: 0.9em;
 }
 
-.add-image-container {
+.header__add-picture-container{
+    text-align: right;
+    padding-right: 13px;
+}
+
+.add-image-btn {
     background: transparent;
     font-size: 26px;
     color: white;
-    top: 13%;
-    right: 4%;
     transition: 0.5s;
-    position: absolute;
 }
 
-.add-image-container:hover {
+.add-image-btn:hover {
     color: #00eaff;
 }
 
@@ -303,7 +313,7 @@ main {
     flex: 1 1 auto;
     flex-wrap: wrap;
     justify-content: space-around;
-    padding: 40px 10px 30px 10px;
+    padding: 0 10px 30px 10px;
 }
 
 .picture-preview {

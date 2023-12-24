@@ -54,7 +54,7 @@ Array.from(pieceContainers).forEach(container => {
 
     container.addEventListener('drop', async (e) => {
         e.preventDefault();
-        
+        console.log("event drop")
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         
         const targetContainer = document.querySelector(`.puzzle-piece[col="${data.crtCol}"][row="${data.crtRow}"]`);
@@ -80,8 +80,8 @@ Array.from(pieceContainers).forEach(container => {
             Piece2Row: parseInt(piece2Row),
             Piece2Col: parseInt(piece2Col),
         };
-        
-        const response = await fetch('Picture/MovePiece/', {
+
+        const response = await fetch(new URL('Picture/MovePiece/', window.location.origin), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,14 +93,14 @@ Array.from(pieceContainers).forEach(container => {
         if (value) {
             setTimeout(() => {
                 alert('You win!');
-                const result = fetch('Picture/AddNewScore/', {
+                const result = fetch(new URL('Picture/AddNewScore/', window.location.origin), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(parseInt(score))
                 });
-                window.location.href = 'Home/Index/';
+                window.location.href = '';
             }, 300); 
         }
         
