@@ -3,18 +3,8 @@ const btnLogin = document.querySelector('.btn-login');
 const wrapper = document.querySelector('.wrapper');
 const registerLink = document.querySelector('.register-link');
 const iconClose = document.querySelector('.icon-close');
-const addImage = document.querySelector('.add-image-container');
-const picturePreview = document.querySelector('.picture-preview');
 
 document.addEventListener('DOMContentLoaded', OnLoad);
-
-async function OnLoad(){
-    const response = await fetch("/Home/IsAuthorized");
-    if (response.ok) {
-        btnLogin.classList.remove('btn-login');
-        btnLogin.classList.add('btn-logout');
-    }
-}
 
 let pathEls = document.querySelectorAll('path');
 pathEls.forEach(pathEl => {
@@ -49,10 +39,7 @@ letterEls.forEach(letterEl => {
     });
 });
 
-btnLogin.addEventListener('click', async () => {
-    const response = await fetch("/Home/Login/");
-    wrapper.classList.add('active-login-menu');
-});
+btnLogin.addEventListener('click', BtnLoginOnClick);
 
 iconClose.addEventListener('click', () => {
     wrapper.classList.remove('active-login-menu');
@@ -63,8 +50,7 @@ registerLink.addEventListener('click', () => {
 });
 
 document.addEventListener('click', async event => {
-    const btnLogout = event.target.closest('.btn-logout');
-    if (btnLogout) {
+    if (event.target.closest('.btn-logout')) {
         const response = await fetch('/Home/Logout', {
             method: 'GET'
         });
@@ -138,4 +124,21 @@ function HandlePicturePreviewClick(pictureId) {
             document.write(result);
             document.close();
         })
+}
+
+async function  BtnLoginOnClick() {
+    await fetch("/Home/Login/");
+    wrapper.classList.add('active-login-menu');
+}
+
+async function OnLoad(){
+    const response = await fetch("/Home/IsAuthorized");
+    if (response.ok) {
+        btnLogin.addEventListener('click', () => {
+
+        });
+        btnLogin.removeEventListener('click', BtnLoginOnClick)
+        btnLogin.classList.remove('btn-login');
+        btnLogin.classList.add('btn-logout');
+    }
 }

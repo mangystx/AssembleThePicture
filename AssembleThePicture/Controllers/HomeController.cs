@@ -26,7 +26,6 @@ public class HomeController : Controller
         _mongoClient = client;
         _db = client.GetDatabase("AtpDb");
         _logger = logger;
-
     }
 
     public IActionResult Index()
@@ -36,6 +35,7 @@ public class HomeController : Controller
         { 
             _logger.LogWarning("ViewBag.Pictures is null");
         }
+        
         return View();
     }
     
@@ -60,6 +60,7 @@ public class HomeController : Controller
             if (user.Password != model.Password){
                 ModelState.AddModelError("", "Wrong password");
                 ViewBag.OpenLoginForm = true;
+                ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
                 return View("Index");
             }
             
@@ -72,11 +73,13 @@ public class HomeController : Controller
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimIdentity), authProperties);
+            ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
             return RedirectToAction("Index");
         }
 
         ViewBag.OpenLoginForm = true;
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        
         return View("Index");
     }
 
@@ -110,10 +113,13 @@ public class HomeController : Controller
     
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimIdentity), authProperties);
+            
             return RedirectToAction("Index");
         }
     
         ViewBag.OpenRegisterForm = true;
+        ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        
         return View("Index");
     }
 
@@ -122,6 +128,7 @@ public class HomeController : Controller
     {
         var context = ControllerContext.HttpContext;
         if (context.User.Identity != null && context.User.Identity.IsAuthenticated) return Ok();
+        
         return Unauthorized();
     }
     
@@ -131,6 +138,7 @@ public class HomeController : Controller
     {
         await ControllerContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        
         return View("Index");
     }
     

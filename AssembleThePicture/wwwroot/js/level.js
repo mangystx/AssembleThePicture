@@ -124,11 +124,11 @@ document.querySelector('.hint__icon').addEventListener('click', () => {
 
 function StartGame() {
     clearInterval(timerInterval);
-    document.querySelector('.timer').innerText = `${score}`;
+    document.querySelector('.right-side-menu__score').innerText = `${score}`;
 
     timerInterval = setInterval(() => {
         score--;
-        document.querySelector('.timer').innerText = `${score}`;
+        document.querySelector('.right-side-menu__score').innerText = `${score}`;
         if (score <= 0) {
             clearInterval(timerInterval);
             score = 0;

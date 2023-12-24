@@ -60,15 +60,14 @@
                     @{
                         var piece = Model.First(p => p.CurrentCol == j && p.CurrentRow == i);
                         <img class="piece" crt-col="@piece.CurrentCol" crt-row="@piece.CurrentRow" 
-                             src="data:image/jpeg;base64,@Convert.ToBase64String(piece.ImageData)" alt="Piece"
-                             draggable="true"/>
+                             src="data:image/jpeg;base64,@Convert.ToBase64String(piece.ImageData)" alt="Piece" draggable="true"/>
                     }
                 </div>
             }
         }
     </div>
     <div class="right-side-menu">
-        <div class="timer">18000</div>
+        <div class="right-side-menu__score">18000</div>
         <div class="scores-container">
             <h2>Top scores</h2>
             @{

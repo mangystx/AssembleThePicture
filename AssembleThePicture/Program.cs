@@ -10,8 +10,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 builder.Services.AddSession();
 
-const string connectionUri =
-    "mongodb+srv://AndreyI:fitwamDSmFmySBM3@mydb.q3fii6h.mongodb.net/?retryWrites=true&w=majority";
+var connectionUri = builder.Configuration.GetConnectionString("MongoDBConnection");
 
 var settings = MongoClientSettings.FromConnectionString(connectionUri);
 settings.ServerApi = new ServerApi(ServerApiVersion.V1);

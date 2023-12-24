@@ -49,7 +49,7 @@ namespace AssembleThePicture.Controllers
 
                 var picture = new Picture
                 {
-                    UserName = User.Identity.Name,
+                    UserName = User.Identity!.Name!,
                     ImageData = byteArray,
                 };
 
@@ -71,7 +71,7 @@ namespace AssembleThePicture.Controllers
 
             if (pictureId == null) throw new ArgumentNullException();
             
-            ObjectId objectId = ObjectId.Parse(pictureId);
+            var objectId = ObjectId.Parse(pictureId);
           
             byte[] imageData = _db.GetCollection<Picture>("pictures").Find(p => p.Id == objectId)
                 .ToList()[0].ImageData;
@@ -158,7 +158,7 @@ namespace AssembleThePicture.Controllers
             try
             {
                 var pictureId = ObjectId.Parse(HttpContext.Session.Get<string>("PictureId"));
-                string userName = HttpContext.User.Identity.Name;
+                string userName = HttpContext.User.Identity!.Name!;
                 var attempts = _db.GetCollection<Attempt>("attempts");
 
                 var filter = Builders<Attempt>.Filter.Eq(a => a.UserName, userName)
