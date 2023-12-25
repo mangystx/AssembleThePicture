@@ -85,7 +85,7 @@ uploadButton.addEventListener('click', () => {
             uploadFile(file);
             setTimeout(() => {
                 location.reload();
-            }, 300);
+            },1000);
         }
     };
 
