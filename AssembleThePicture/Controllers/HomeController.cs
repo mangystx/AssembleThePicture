@@ -35,6 +35,8 @@ public class HomeController : Controller
         { 
             _logger.LogWarning("ViewBag.Pictures is null");
         }
+
+        ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
         
         return View();
     }
@@ -54,6 +56,8 @@ public class HomeController : Controller
                 ModelState.AddModelError("", "Such user does not exist");
                 ViewBag.OpenLoginForm = true;
                 ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+                ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+                
                 return View("Index");
             }
             
@@ -61,6 +65,8 @@ public class HomeController : Controller
                 ModelState.AddModelError("", "Wrong password");
                 ViewBag.OpenLoginForm = true;
                 ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+                ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+                
                 return View("Index");
             }
             
@@ -74,11 +80,14 @@ public class HomeController : Controller
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimIdentity), authProperties);
             ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+            ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+            
             return RedirectToAction("Index");
         }
 
         ViewBag.OpenLoginForm = true;
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
         
         return View("Index");
     }
@@ -98,6 +107,8 @@ public class HomeController : Controller
                 ModelState.AddModelError("", "User already exists");
                 ViewBag.OpenRegisterForm = true;
                 ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+                ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+                
                 return View("Index");
             }
 
@@ -113,12 +124,14 @@ public class HomeController : Controller
     
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimIdentity), authProperties);
+            ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
             
             return RedirectToAction("Index");
         }
     
         ViewBag.OpenRegisterForm = true;
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
         
         return View("Index");
     }
@@ -138,6 +151,7 @@ public class HomeController : Controller
     {
         await ControllerContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         ViewBag.Pictures = _db.GetCollection<Picture>("pictures").Find(_ => true).ToList();
+        ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
         
         return View("Index");
     }

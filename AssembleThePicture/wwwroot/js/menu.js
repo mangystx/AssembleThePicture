@@ -83,6 +83,9 @@ uploadButton.addEventListener('click', () => {
         let file = input.files[0];
         if (file) {
             uploadFile(file);
+            setTimeout(() => {
+                location.reload();
+            }, 300);
         }
     };
 

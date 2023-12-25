@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
-    options.LoginPath = "/Authorization/Login"; 
+    options.LoginPath = "/Home/Index";
 });
 builder.Services.AddSession();
 
