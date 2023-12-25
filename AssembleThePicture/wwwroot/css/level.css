@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #4b4949;
+    background-color: #071c31;
     display: flex;
     flex-direction: column;
 }
@@ -159,7 +159,7 @@ main {
 #pictureModal {
     display: none;
     position: absolute;
-    padding: 100px;
+    padding: 5%;
     z-index: 1000;
     width: 100%;
     height: 100%;

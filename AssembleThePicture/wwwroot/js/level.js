@@ -131,8 +131,10 @@ function StartGame() {
         document.querySelector('.right-side-menu__score').innerText = `${score}`;
         if (score <= 0) {
             clearInterval(timerInterval);
-            score = 0;
-            alert('Game Over!'); 
+            document.querySelector('.right-side-menu__score').innerText = `0`;
+            alert('Game Over!');
+            
+            window.location.href = '';
         }
     }, 10);
 }

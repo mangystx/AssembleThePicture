@@ -3,13 +3,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using AssembleThePicture.Models;
 using AssembleThePicture.Models.DataBase;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using AssembleThePicture.Models.ViewModels.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using ILogger = DnsClient.Internal.ILogger;
 
 namespace AssembleThePicture.Controllers;
 

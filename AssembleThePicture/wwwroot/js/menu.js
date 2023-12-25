@@ -132,6 +132,7 @@ function HandlePicturePreviewClick(pictureId) {
 async function  BtnLoginOnClick() {
     await fetch("/Home/Login/");
     wrapper.classList.add('active-login-menu');
+    document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
 }
 
 async function OnLoad(){
