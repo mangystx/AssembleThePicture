@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using AssembleThePicture.Models;
 using AssembleThePicture.Models.DataBase;
+using AssembleThePicture.Models.ViewModels;
 using MongoDB.Driver;
 using AssembleThePicture.Models.ViewModels.Authorization;
 using Microsoft.AspNetCore.Authentication;
@@ -57,7 +58,7 @@ public class HomeController : Controller
                 ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
                 
                 return View("Index");
-            }
+            } 
             
             if (user.Password != model.Password){
                 ModelState.AddModelError("", "Wrong password");
@@ -152,6 +153,31 @@ public class HomeController : Controller
         ViewBag.IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
         
         return View("Index");
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> AddImage()
+    {
+        var file = Request.Form.Files[0];
+        if (file != null && file.Length > 0)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            byte[] byteArray = memoryStream.ToArray();
+
+            var picture = new Picture
+            {
+                UserName = User.Identity!.Name!,
+                ImageData = byteArray,
+            };
+
+            await _db.GetCollection<Picture>("pictures").InsertOneAsync(picture);
+
+            return Json(new { success = true, message = "Image uploaded successfully" });
+        }
+
+        return Json(new { success = false, message = "No file or empty file received" });
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

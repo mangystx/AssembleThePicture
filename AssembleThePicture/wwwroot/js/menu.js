@@ -106,7 +106,7 @@ function uploadFile(file) {
     let formData = new FormData();
     formData.append('file', file);
 
-    fetch('/Picture/AddImage', {
+    fetch('/Home/AddImage', {
         method: 'POST',
         body: formData
     }).catch(error => {

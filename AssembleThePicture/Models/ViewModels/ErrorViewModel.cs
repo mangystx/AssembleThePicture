@@ -1,4 +1,4 @@
-namespace AssembleThePicture.Models;
+namespace AssembleThePicture.Models.ViewModels;
 
 public class ErrorViewModel
 {
