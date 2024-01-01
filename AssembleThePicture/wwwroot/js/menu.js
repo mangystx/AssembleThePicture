@@ -108,19 +108,18 @@ function uploadFile(file) {
 
     fetch('/Home/AddImage', {
         method: 'POST',
-        body: formDataоиріґвисгпцщиавгнвмсзгіфнврмжіфвм
-        
-        signal
-        headersічлдіь
+        body: formData
     }).catch(error => {
         console.error('Error uploading file:', error);
     });
 }
 
-WE=function (=EFWFWSC`PIOJCгшщчяпсзшгні`)    fetch('/Picture/Puzzle', {
+function HandlePicturePreviewClick(pictureId) {
+    fetch('/Picture/Puzzle', {
         method: 'POST',
         headers: {
-            '
+            'Content-Type': 'application/json',  
+        },
         body: JSON.stringify(pictureId)
     }).then(response => response.text())
         .then(result => {
