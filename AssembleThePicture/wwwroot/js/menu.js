@@ -82,14 +82,16 @@ uploadButton.addEventListener('click', () => {
     const handleFileSelection = function () {
         let file = input.files[0];
         if (file) {
-            uploadFile(file);
-            setTimeout(() => {
+            uploadFile(file).then(() => {
                 location.reload();
-            },1000);
+            })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
         }
     };
 
-    input.addEventListener('change', handleFileSelection);
+    input.addEventListener('input', handleFileSelection);
 
     // Append the input to the body so that the click event works as expected
     document.body.appendChild(input);
@@ -102,11 +104,10 @@ uploadButton.addEventListener('click', () => {
 });
 
 function uploadFile(file) {
-    console.log("in upload file")
     let formData = new FormData();
     formData.append('file', file);
 
-    fetch('/Home/AddImage', {
+    return fetch('/Home/AddImage', {
         method: 'POST',
         body: formData
     }).catch(error => {
